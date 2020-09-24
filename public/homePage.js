@@ -18,24 +18,71 @@ ApiConnector.current(response => {
     if (response.success) {
       ProfileWidget.showProfile(response.data);
     }
-  });
+});
 
 //Получение текущих курсов валюты
 const rates = new RatesBoard();
+
+setTimeout(ApiConnector.getStocks(response => {
+    if (response.success) {
+      rates.clearTable();
+      rates.fillTable(response.data);
+    }
+  }), 60000);
+
+//setInterval(ApiConnector.getStocks(response => {
+//  if (response.success) {
+//    rates.clearTable();
+//    rates.fillTable(response.data);
+//  }
+//}), 60000);
 
 
 //Операции с деньгами
 const money = new MoneyManager();
 
-//Реализуйте пополнение баланса:
 money.addMoneyCallback = (data) => {
-}
-//Реализуйте конвертирование валюты:
-money.conversionMoneyCallback = (data) => {
-}
-//Реализуйте перевод валюты:
-money.sendMoneyCallback = (data) => {
-}
+    ApiConnector.addMoney(data, response => {
+      if (response.success) {
+        ProfileWidget.showProfile(response.data);
+        return money.setMessage(true, 'Operation completed successfully');
+      }
+      return money.setMessage(false, 'Server error: Re-submit the form');
+    })
+  }
+
+        //Реализуйте пополнение баланса:
+        money.addMoneyCallback = (data) => {
+            ApiConnector.addMoney(data, response => {
+                if (response.success) {
+                ProfileWidget.showProfile(response.data);
+                return money.setMessage(true, 'Operation completed successfully');
+                }
+                return money.setMessage(false, 'Server error: Re-submit the form');
+            })
+        }
+
+        //Реализуйте конвертирование валюты:
+        money.conversionMoneyCallback = (data) => {
+            ApiConnector.convertMoney(data, response => {
+                if (response.success) {
+                  ProfileWidget.showProfile(response.data);
+                  return money.setMessage(true, 'Operation completed successfully');
+                }
+                return money.setMessage(false, 'Server error: Re-submit the form');
+              })
+        }
+
+        //Реализуйте перевод валюты:
+        money.sendMoneyCallback = (data) => {
+            ApiConnector.transferMoney(data, response => {
+                if (response.success) {
+                  ProfileWidget.showProfile(response.data);
+                  return money.setMessage(true, 'Operation completed successfully');
+                }
+                return money.setMessage(false, 'Server error: Re-submit the form');
+              })
+        }
 
 //Работа с избранным
 let favorites = new FavoritesWidget;
