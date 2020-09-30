@@ -3,7 +3,8 @@
 //Реализация страницы «Личный кабинет пользователя»
 
 //Выход из личного кабинета
-const logoutButton = new LogoutButton();
+const logoutButton = new LogoutButton(); //
+
 
 logoutButton.action = function () {
      ApiConnector.logout(response => {
@@ -22,19 +23,36 @@ ApiConnector.current(response => {
 
 //Получение текущих курсов валюты
 const rates = new RatesBoard();
+const errorMessageBlock = new errorMessageBlock(); //класс с сообщением
 
-setTimeout(ApiConnector.getStocks(response => {
+function getStocks () { 
+  ApiConnector.getStocks (response => {
     if (response.success) {
       rates.clearTable();
       rates.fillTable(response.data);
     }
-  }), 60000);
+    
+    else {
+      rates.errorMessageBlock(response.error);
+  }
+  })
+}
+
+getStocks ();
+setInterval (getStocks, 60000);
+
+//setTimeout(ApiConnector.getStocks(response => {
+    //if (response.success) {
+      //rates.clearTable();
+     // rates.fillTable(response.data);
+   // }
+ //}), 60000);
 
 //setInterval(ApiConnector.getStocks(response => {
-//  if (response.success) {
-//    rates.clearTable();
-//    rates.fillTable(response.data);
-//  }
+    //if (response.success) {
+      //rates.clearTable();
+      //rates.fillTable(response.data);
+  //}
 //}), 60000);
 
 

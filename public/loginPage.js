@@ -3,14 +3,14 @@
 const userNew = new UserForm();
 
 //loginFormCallback — функция, которая будет выполняться при попытке авторизации
-userNew.loginFormCallBack = function (data) { 
+userNew.loginFormCallback = function (data) { 
     ApiConnector.login(data, response => {
         if (response.success) {
             location.reload();
         } 
 
         else {
-        newUser.setLoginErrorMessageBox(response.error);
+        userNew.setLoginErrorMessage(response.error);
         } 
     } );
 }
@@ -25,8 +25,8 @@ userNew.registerFormCallback = function (data) {
          
          else {
              //Выведите ошибку или обновите страницу
-         newUser.setRegisterErrorMessage(response.error);
-            location.reload();
+         userNew.setRegisterErrorMessage(response.error);
+         //location.reload();
          }
     });
 }
